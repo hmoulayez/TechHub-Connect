@@ -1,0 +1,36 @@
+enable
+conf t
+hostname ISP
+service password-encryption
+
+enable secret labo
+
+ip domain name labo.lab
+ip ssh version 2
+
+username habibou secret labo
+
+interface Loopback0
+ ip address 4.4.4.4 255.255.255.0
+
+interface GigabitEthernet0/0
+ ip address 10.10.12.2 255.255.255.0
+ duplex auto
+ speed auto
+
+router rip
+ version 2
+ network 4.0.0.0
+ network 10.0.0.0
+
+line con 0
+ password labo
+ login
+ 
+line vty 0 4
+ login local
+ transport input telnet ssh
+ 
+line vty 5 16
+ login local
+ transport input telnet ssh

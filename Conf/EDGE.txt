@@ -1,0 +1,41 @@
+enable
+conf t
+hostname EDGE
+service password-encryption
+
+username habibou password labo
+
+no ip domain-lookup
+ip domain-name labo.lab
+
+interface Loopback0
+ ip address 3.3.3.3 255.255.255.255
+
+interface Ethernet0/0
+ ip address 10.10.12.1 255.255.255.0
+ half-duplex
+
+interface Serial0/0
+ ip address 10.10.11.1 255.255.255.0
+ clock rate 9600
+
+interface Serial0/1
+ ip address 10.10.10.1 255.255.255.0
+ clock rate 9600
+
+router rip
+ version 2
+ network 3.0.0.0
+ network 10.0.0.0
+
+line con 0
+ password labo
+ login
+
+line vty 0 4
+ login local
+ transport input telnet
+ 
+line vty 5 15
+ login local
+ transport input telnet
