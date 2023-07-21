@@ -1,35 +1,41 @@
 enable
 conf t
+no ip domain-lookup
 hostname FACTORY
+
+username habibou password labo
+enable secret labo
 service password-encryption
 
-username habibou secret labo
+ip domain-name TechHub.com
 
-no ip domain lookup
-ip domain name labo.lab
-
-interface Loopback0
- ip address 2.2.2.2 255.255.255.255
-
-interface Ethernet0/0
- full-duplex
-
-interface Serial0/0
- ip address 10.10.11.2 255.255.255.0
-
-router rip
- version 2
- network 2.0.0.0
- network 10.0.0.0
+ip access-list standard IT
+permit 172.16.10.0 0.0.0.255
+exit
 
 line con 0
- password labo
- login
+password labo
+login
+exit
 
-line vty 0 4
- login local
- transport input telnet
- 
-line vty 5 15
- login local
- transport input telnet
+line vty 0 15
+login local
+transport input telnet
+access-class IT in 
+exit
+
+interface Loopback0
+ip address 2.2.2.2 255.255.255.255
+
+interface Ethernet0/0
+no shut
+
+interface Serial0/0
+ip address 172.16.100.6 255.255.255.252
+no shut
+
+router rip
+version 2
+network 2.0.0.0
+network 172.16.0.0
+exit

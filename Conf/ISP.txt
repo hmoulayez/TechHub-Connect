@@ -1,43 +1,37 @@
 enable
 conf t
+no ip domain-lookup
 hostname ISP
-service password-encryption
-
-enable secret labo
-
-ip domain name labo.lab
-ip ssh version 2
 
 username habibou secret labo
+enable secret labo
 
-interface Loopback0
- ip address 4.4.4.4 255.255.255.0
+ip domain name techHub.com
+crypto key generate rsa 1024
+ip ssh version 2
 
-interface GigabitEthernet0/0
- ip address 10.10.12.2 255.255.255.0
- duplex auto
- speed auto
+
+ip access list standard IT
+permit 172.16.10.0 0.0.0.255
+exit
 
 line con 0
- password labo
- login
- 
-line vty 0 4
- login local
- transport input telnet ssh
- 
-line vty 5 16
- login local
- transport input telnet ssh
- 
- router rip
- version 2
- network 4.0.0.0
- network 10.0.0.0
- network 200.0.0.0
- 
- int g0/1
- ip add 200.0.0.1 255.255.255.0
- no shut
- 
- 
+password labo
+login
+exit
+
+line vty 0 15
+login local
+transport input ssh telnet
+access-class IT in 
+exit
+
+int g0/1
+ip add 8.8.8.1 255.255.255.0
+no shut
+
+int g0/0
+ip add 200.0.0.1 255.255.255.252
+no shut
+exit
+
