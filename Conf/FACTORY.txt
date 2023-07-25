@@ -8,9 +8,11 @@ enable secret labo
 service password-encryption
 
 ip domain-name TechHub.com
+crypto key generate rsa 1024
+ip ssh version 2
 
 ip access-list standard IT
-permit 172.16.10.0 0.0.0.255
+permit 172.16.11.0 0.0.0.255
 exit
 
 line con 0
@@ -20,22 +22,63 @@ exit
 
 line vty 0 15
 login local
-transport input telnet
-access-class IT in 
+transport input telnet ssh
+no access-class IT in 
 exit
 
 interface Loopback0
 ip address 2.2.2.2 255.255.255.255
 
-interface Ethernet0/0
+interface g0/1
+no ip add
 no shut
+int g0/1.11
+encapsulation dot1q 11
+ip add 172.16.11.254 255.255.255.0
+no shut
+int g0/1.22
+encapsulation dot1q 22
+ip add 172.16.22.254 255.255.255.0
+ip helper-address 3.3.3.3
+no shut
+int g0/1.33
+encapsulation dot1q 33
+ip add 172.16.33.254 255.255.255.0
+no shut
+int g0/1.99
+encapsulation dot1q 99
+ip helper-address 3.3.3.3
+ip add 172.16.99.254 255.255.255.0
+no shut
+int g0/1.220
+encapsulation dot1q 220 native
+ip add 172.16.220.254 255.255.255.0
+no shut
+int g0/1.330
+encapsulation dot1q 330
+ip add 172.16.250.254 255.255.255.0
+no shut
+exit
 
-interface Serial0/0
+
+
+interface g0/0
 ip address 172.16.100.6 255.255.255.252
 no shut
+exit
+
 
 router rip
 version 2
-network 2.0.0.0
-network 172.16.0.0
+network 2.2.2.2
+network 172.16.100.4
+network 172.16.11.0
+network 172.16.22.0
+network 172.16.33.0
+network 172.16.99.0
+network 172.16.220.0
+network 172.16.250.0 
+passive-interface g0/1
 exit
+
+ip route 0.0.0.0 0.0.0.0 g0/0

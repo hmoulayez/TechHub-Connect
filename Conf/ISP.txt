@@ -7,13 +7,6 @@ username habibou secret labo
 enable secret labo
 
 ip domain name techHub.com
-crypto key generate rsa 1024
-ip ssh version 2
-
-
-ip access list standard IT
-permit 172.16.10.0 0.0.0.255
-exit
 
 line con 0
 password labo
@@ -22,15 +15,14 @@ exit
 
 line vty 0 15
 login local
-transport input ssh telnet
-access-class IT in 
+transport input telnet 
 exit
 
-int g0/1
+int e0/0
 ip add 8.8.8.1 255.255.255.0
 no shut
 
-int g0/0
+int s0/0
 ip add 200.0.0.1 255.255.255.252
 no shut
 exit

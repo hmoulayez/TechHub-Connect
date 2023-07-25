@@ -1,0 +1,83 @@
+enable
+conf t
+no ip domain-lookup
+hostname SW-FACTORY
+
+username habibou password labo
+enable secret labo
+service password-encryption
+
+ip domain-name TechHub.com
+crypto key generate rsa 1024
+ip ssh version 2
+
+ip access-list standard IT
+permit 172.16.11.0 0.0.0.255
+exit
+
+line con 0
+password labo
+login
+exit
+
+line vty 0 15
+login local
+transport input telnet ssh
+exit
+
+int vlan 11
+ip add 172.16.11.245 255.255.255.0
+no shut
+exit
+
+ip default-gateway 172.16.11.254
+
+VLAN 11
+name IT
+VLAN 22
+name USER
+VLAN 33
+name MACHINES
+VLAN 99
+name VOICE
+VLAN 220
+name native
+VLAN 330
+name Parking
+exit
+
+int range f0/1-2 
+switchport mode access 
+switchport access vlan 11
+no shut
+exit
+
+int range f0/3-6
+switchport mode access
+switchport access vlan 22
+switchport voice vlan 99
+no shut
+exit
+
+int range f0/7-8
+switchport mode access 
+switchport access vlan 33
+no shut
+exit
+
+int range f0/9-12
+switchport mode trunk 
+switchport trunk allowed vlan 11,22,33,99,330
+switchport trunk native vlan 220
+no shut
+exit
+
+int range f0/13-24
+switchport mode access
+switchport access vlan 330
+shut
+exit
+
+int g0/1
+switchport mode trunk
+switchport trunk native vlan 220
