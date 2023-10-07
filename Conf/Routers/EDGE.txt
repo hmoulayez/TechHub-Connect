@@ -10,8 +10,9 @@ service password-encryption
 ip domain-name TechHub.com
 
 ip access-list standard USER
-permit 172.16.20.0 0.0.0.255
-permit 172.16.22.0 0.0.0.255
+no permit 172.16.20.0 0.0.0.255
+no permit 172.16.22.0 0.0.0.255
+permit any 
 
 exit
 ip access-list standard IT
@@ -33,17 +34,11 @@ interface Loopback0
 ip address 3.3.3.3 255.255.255.255
 
 interface Ethernet0/0
-ip address 172.16.100.5 255.255.255.252
-ip nat inside
-no shut
- 
-interface Serial0/0
-ip address 200.0.0.2 255.255.255.252
-clock rate 9600
+ip add dhcp
 ip nat outside
 no shut
 
-interface Serial0/1
+interface Serial0/0
 ip address 172.16.100.1 255.255.255.252
 clock rate 9600
 ip nat inside
@@ -59,9 +54,9 @@ default-information originate
 exit
 
 
-ip route 0.0.0.0 0.0.0.0 s0/0
+ip route 0.0.0.0 0.0.0.0 e0/0
 
-ip nat inside source list USER interface s0/0 overload
+ip nat inside source list USER interface e0/0 overload
 
 ip dhcp pool USER
 network 172.16.20.0 255.255.255.0

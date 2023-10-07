@@ -14,6 +14,9 @@ ip ssh version 2
 ip access-list standard IT
 permit 172.16.10.0 0.0.0.255
 exit
+ip access-list standard site-to-site
+permit 172.16.0.0 0.0.255.255
+exit 
 
 line con 0
 password labo
@@ -40,28 +43,51 @@ int f0/0.10
 description IT
 encapsulation dot1q 10
 ip add 172.16.10.254 255.255.255.0
+ip access-group site-to-site out
 no shut
 int f0/0.20
 description USER
 encapsulation dot1q 20
 ip add 172.16.20.254 255.255.255.0
 ip helper-add 172.16.100.1
+ip access-group site-to-site out
 no shut
 int f0/0.40
 description SRV
 encapsulation dot1q 40
 ip add 172.16.40.254 255.255.255.0
+ip access-group site-to-site out
 no shut
 int f0/0.90
 description VOICE
 encapsulation dot1q 90
 ip add 172.16.90.254 255.255.255.0
 ip helper-add 172.16.100.1
+ip access-group site-to-site out
 no shut
 int f0/0.200
 description NATIVE
 encapsulation dot1q 200 native
 ip add 172.16.200.254 255.255.255.0
+no shut
+exit
+
+int f1/1
+switchport mode access
+switchport access vlan 50
+exit
+int f1/4
+switchport mode access
+switchport access vlan 1
+no shut
+
+
+int vlan 50
+ip add 10.0.0.254 255.255.255.0
+exit
+
+int vlan 1
+ip address 172.16.100.5 255.255.255.252
 no shut
 exit
 
@@ -74,6 +100,7 @@ network 172.16.40.0
 network 172.16.90.0
 network 172.16.200.0
 network 172.16.100.0
+network 10.0.0.0
 passive-interface fastEthernet 0/0
 exit
 
@@ -102,3 +129,6 @@ ephone 2
 type 7912
 button 1:2
 
+
+vlan database
+vlan 50 name DMZ
